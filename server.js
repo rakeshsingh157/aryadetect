@@ -2,35 +2,44 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 5000;
 
-// API Token (Directly Code Me Rakha Hai - Not Recommended for Public Repos)
-const API_TOKEN = "9121fb99fb6b6890f27fb0b41ad7a84a";
+// Deepfake API Token (Apna actual token daal)
+const API_TOKEN = "9121fb99fb6b6890f27fb0b41ad7a84a"; 
 
-// Multer setup for handling audio file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// Multer Storage for Audio Uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+const upload = multer({ storage });
 
-app.use(cors());
-app.use(express.json());
-
-// Route to handle audio deepfake detection
+// API Route for Audio Upload and Deepfake Detection
 app.post("/detect-audio", upload.single("audio"), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: "No audio file uploaded" });
+            return res.status(400).json({ error: "No file uploaded" });
         }
 
-        // Convert audio file to Base64
-        const doc_base64 = req.file.buffer.toString("base64");
-        const req_id = Date.now().toString(); // Unique request ID
+        // Convert Audio to Base64
+        const audioPath = req.file.path;
+        const audioBase64 = fs.readFileSync(audioPath, { encoding: "base64" });
 
-        // API Call to Arya AI
+        // API Request to Arya AI
         const response = await axios.post(
             "https://ping.arya.ai/api/v1/deepfake-detection/audio",
-            { doc_base64, req_id },
+            {
+                doc_base64: audioBase64,
+                req_id: Date.now().toString(), // Random Unique ID
+            },
             {
                 headers: {
                     token: API_TOKEN,
@@ -38,6 +47,9 @@ app.post("/detect-audio", upload.single("audio"), async (req, res) => {
                 },
             }
         );
+
+        // Delete File After Upload
+        fs.unlinkSync(audioPath);
 
         res.json(response.data);
     } catch (error) {
@@ -47,5 +59,5 @@ app.post("/detect-audio", upload.single("audio"), async (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
