@@ -1,34 +1,41 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 5000;
 
-// API Token (Directly code me rakha hai)
-const API_TOKEN = "gc23ffc5a2606c9ca22dboe415d6ff1f"; 
+// API Token (Replace with your actual token)
+const API_TOKEN = "gc23ffc5a2606c9ca22dboe415d6ff1f";  
+
+// Multer configuration for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// Deepfake Audio Detection API Route
-app.post("/detect-audio", async (req, res) => {
+// Deepfake Audio Detection Route
+app.post("/detect-audio", upload.single("audio"), async (req, res) => {
     try {
-        const { doc_base64, req_id } = req.body;
-
-        if (!doc_base64 || !req_id) {
-            return res.status(400).json({ error: "Missing required fields" });
+        if (!req.file) {
+            return res.status(400).json({ error: "No audio file uploaded" });
         }
 
-        // API Call to Arya AI
+        // Convert audio file to Base64
+        const doc_base64 = req.file.buffer.toString("base64");
+
+        // Send request to Arya AI API
         const response = await axios.post(
             "https://ping.arya.ai/api/v1/deepfake-detection/audio",
-            { doc_base64, req_id },
+            { doc_base64, req_id: "12345" },
             {
                 headers: {
                     token: API_TOKEN,
-                    "content-type": "application/json",
+                    "Content-Type": "application/json",
                 },
             }
         );

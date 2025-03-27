@@ -3,17 +3,28 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "��#\u0000 \u0000a\u0000r\u0000y\u0000a\u0000d\u0000e\u0000t\u0000e\u0000c\u0000t\u0000\r\u0000 \u0000",
   "dependencies": {
     "axios": "^1.8.4",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
-  }
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "multer": "^1.4.5-lts.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakeshsingh157/aryadetect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rakeshsingh157/aryadetect/issues"
+  },
+  "homepage": "https://github.com/rakeshsingh157/aryadetect#readme"
 }
