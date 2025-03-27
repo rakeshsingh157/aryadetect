@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json({ limit: '5mb' }));
 
 const API_ENDPOINT = 'https://ping.arya.ai/api/v1/deepfake-detection/audio';
-const API_TOKEN = '9170ff98a06b6b9ca079e3b54cd8ab1c'; // DO NOT DO THIS IN PRODUCTION!
+const API_TOKEN = '9c74aac5f4616ac1a029e0e71ed8ab49'; // DO NOT DO THIS IN PRODUCTION!
 
 app.post('/deepfake-check', async (req, res) => {
   try {
