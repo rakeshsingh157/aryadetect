@@ -2,23 +2,21 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
 
 const app = express();
 const PORT = 5000;
 
-// API Token (Replace with your actual token)
-const API_TOKEN = "gc23ffc5a2606c9ca22dboe415d6ff1f";  
+// API Token (Directly Code Me Rakha Hai - Not Recommended for Public Repos)
+const API_TOKEN = "gc23ffc5a2606c9ca22dboe415d6ff1f";
 
-// Multer configuration for file uploads
+// Multer setup for handling audio file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 app.use(cors());
 app.use(express.json());
 
-// Deepfake Audio Detection Route
+// Route to handle audio deepfake detection
 app.post("/detect-audio", upload.single("audio"), async (req, res) => {
     try {
         if (!req.file) {
@@ -27,15 +25,16 @@ app.post("/detect-audio", upload.single("audio"), async (req, res) => {
 
         // Convert audio file to Base64
         const doc_base64 = req.file.buffer.toString("base64");
+        const req_id = Date.now().toString(); // Unique request ID
 
-        // Send request to Arya AI API
+        // API Call to Arya AI
         const response = await axios.post(
             "https://ping.arya.ai/api/v1/deepfake-detection/audio",
-            { doc_base64, req_id: "12345" },
+            { doc_base64, req_id },
             {
                 headers: {
                     token: API_TOKEN,
-                    "Content-Type": "application/json",
+                    "content-type": "application/json",
                 },
             }
         );
